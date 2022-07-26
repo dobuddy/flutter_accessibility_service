@@ -1,6 +1,8 @@
 # flutter_accessibility_service
 
-a plugin for interacting with Accessibility Service in Android.
+Forked from https://github.com/X-SLAYER/flutter_accessibility_service.
+
+A plugin for interacting with Accessibility Service in Android.
 
 Accessibility services are intended to assist users with disabilities in using Android devices and apps, or I can say to get android os events like keyboard key press events or notification received events etc.
 
