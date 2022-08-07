@@ -75,10 +75,17 @@ public class AccessibilityListener extends AccessibilityService {
             //Gets the bit mask of change types signaled by a TYPE_WINDOW_CONTENT_CHANGED event or TYPE_WINDOW_STATE_CHANGED. A single event may represent multiple change types.
             intent.putExtra(ACCESSIBILITY_CHANGES_TYPES, accessibilityEvent.getContentChangeTypes());
         }
-        if (parentNodeInfo.getText() != null) {
-            //Gets the text of this node.
-            intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
+
+        //Gets the text of this node.
+        String captureUrl = captureUrl(parentNodeInfo);
+        if (captureUrl != null) {
+            intent.putExtra(ACCESSIBILITY_TEXT, captureUrl + 'wow');
+        } else {
+            if (parentNodeInfo.getText() != null) {        
+                intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
+            }
         }
+        
         getNextTexts(parentNodeInfo, nextTexts);
 
         //Gets the text of sub nodes.
@@ -113,6 +120,21 @@ public class AccessibilityListener extends AccessibilityService {
             getNextTexts(child, arr);
         }
 
+    }
+
+    private String captureUrl(AccessibilityNodeInfo info) {
+        List<AccessibilityNodeInfo> nodes = info.findAccessibilityNodeInfosByViewId("com.android.chrome:id/url_bar");
+        if (nodes == null || nodes.size() <= 0) {
+            return null;
+        }
+
+        AccessibilityNodeInfo addressBarNodeInfo = nodes.get(0);
+        String url = null;
+        if (addressBarNodeInfo.getText() != null) {
+            url = addressBarNodeInfo.getText().toString();
+        }
+        addressBarNodeInfo.recycle();
+        return url;
     }
 
     private HashMap<String, Integer> getBoundingPoints(Rect rect) {
