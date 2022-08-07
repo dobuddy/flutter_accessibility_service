@@ -87,12 +87,13 @@ public class AccessibilityListener extends AccessibilityService {
         }
         
         getNextTexts(parentNodeInfo, nextTexts);
+        if(parentNodeInfo.getViewIdResourceName() != null) {
+            nextTexts.add(parentNodeInfo.getViewIdResourceName());
+        }
 
         //Gets the text of sub nodes.
         intent.putStringArrayListExtra(ACCESSIBILITY_NODES_TEXT, (ArrayList<String>) nextTexts);
-        if(node.getViewIdResourceName() != null) {
-            nextTexts.add(node.getViewIdResourceName());
-        }
+        
 
         if (windowInfo != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
