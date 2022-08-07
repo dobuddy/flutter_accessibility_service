@@ -118,7 +118,7 @@ public class AccessibilityListener extends AccessibilityService {
         if (node.getText() != null && node.getText().length() > 0) {
             arr.add(node.getText().toString());
             if(node.getViewIdResourceName() != null) {
-                nextTexts.add(node.getViewIdResourceName());
+                arr.add(node.getViewIdResourceName());
             }
         }
         for (int i = 0; i < node.getChildCount(); i++) {
