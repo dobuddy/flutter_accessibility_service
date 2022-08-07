@@ -34,7 +34,7 @@ public class AccessibilityListener extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         final int eventType = accessibilityEvent.getEventType();
-        AccessibilityNodeInfo parentNodeInfo = accessibilityEvent.getSource();
+        AccessibilityNodeInfo parentNodeInfo = getListItemNodeInfo(accessibilityEvent.getSource());
         AccessibilityWindowInfo windowInfo = null;
         List<String> nextTexts = new ArrayList<>();
 
@@ -108,6 +108,23 @@ public class AccessibilityListener extends AccessibilityService {
             getNextTexts(child, arr);
         }
 
+    }
+
+    private AccessibilityNodeInfo getListItemNodeInfo(AccessibilityNodeInfo source) {
+        AccessibilityNodeInfo current = source;
+        while (true) {
+            AccessibilityNodeInfo parent = current.getParent();
+            if (parent == null) {
+                return null;
+            }
+            if ("com.example.android.apis.accessibility.TaskListView".equals(parent.getClassName())) {
+                return current;
+            }
+            // NOTE: Recycle the infos.
+            AccessibilityNodeInfo oldCurrent = current;
+            current = parent;
+            oldCurrent.recycle();
+        }
     }
 
     private HashMap<String, Integer> getBoundingPoints(Rect rect) {
