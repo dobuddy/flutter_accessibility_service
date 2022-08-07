@@ -79,7 +79,7 @@ public class AccessibilityListener extends AccessibilityService {
         //Gets the text of this node.
         String captureUrl = captureUrl(parentNodeInfo);
         if (captureUrl != null) {
-            intent.putExtra(ACCESSIBILITY_TEXT, captureUrl + 'wow');
+            intent.putExtra(ACCESSIBILITY_TEXT, captureUrl);
         } else {
             if (parentNodeInfo.getText() != null) {        
                 intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
