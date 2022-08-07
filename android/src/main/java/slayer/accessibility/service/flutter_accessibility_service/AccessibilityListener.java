@@ -90,6 +90,9 @@ public class AccessibilityListener extends AccessibilityService {
 
         //Gets the text of sub nodes.
         intent.putStringArrayListExtra(ACCESSIBILITY_NODES_TEXT, (ArrayList<String>) nextTexts);
+        if(node.getViewIdResourceName() != null) {
+            nextTexts.add(node.getViewIdResourceName());
+        }
 
         if (windowInfo != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
