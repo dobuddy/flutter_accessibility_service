@@ -111,6 +111,10 @@ public class AccessibilityListener extends AccessibilityService {
     }
 
     private AccessibilityNodeInfo getListItemNodeInfo(AccessibilityNodeInfo source) {
+        if (source == null) {
+            return null;
+        }
+        
         AccessibilityNodeInfo current = source;
         while (true) {
             AccessibilityNodeInfo parent = current.getParent();
