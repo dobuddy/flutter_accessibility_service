@@ -77,19 +77,19 @@ public class AccessibilityListener extends AccessibilityService {
         }
 
         //Gets the text of this node.
-        String captureUrl = captureUrl(parentNodeInfo);
-        if (captureUrl != null) {
-            intent.putExtra(ACCESSIBILITY_TEXT, captureUrl);
-        } else {
-            if (parentNodeInfo.getText() != null) {        
-                intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
-            }
+        // String captureUrl = captureUrl(parentNodeInfo);
+        // if (captureUrl != null) {
+        //     intent.putExtra(ACCESSIBILITY_TEXT, captureUrl);
+        // } else {
+        //     if (parentNodeInfo.getText() != null) {        
+        //         intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
+        //     }
+        // }
+        if (parentNodeInfo.getText() != null) {        
+            intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
         }
         
         getNextTexts(parentNodeInfo, nextTexts);
-        if(parentNodeInfo.getViewIdResourceName() != null) {
-            nextTexts.add(parentNodeInfo.getViewIdResourceName());
-        }
 
         //Gets the text of sub nodes.
         intent.putStringArrayListExtra(ACCESSIBILITY_NODES_TEXT, (ArrayList<String>) nextTexts);
@@ -115,8 +115,12 @@ public class AccessibilityListener extends AccessibilityService {
 
 
     void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
-        if (node.getText() != null && node.getText().length() > 0)
+        if (node.getText() != null && node.getText().length() > 0) {
             arr.add(node.getText().toString());
+            if(node.getViewIdResourceName() != null) {
+                nextTexts.add(node.getViewIdResourceName());
+            }
+        }
         for (int i = 0; i < node.getChildCount(); i++) {
             AccessibilityNodeInfo child = node.getChild(i);
             if (child == null)
