@@ -61,6 +61,7 @@ public class AccessibilityListener extends AccessibilityService {
         Intent intent = new Intent(ACCESSIBILITY_INTENT);
         intent.putExtra(ACCESSIBILITY_NAME, packageName);
         intent.putExtra(ACCESSIBILITY_TEXT, capturedUrl);
+        Log.d("unprn", "Accessibility event: " + packageName + ", " + capturedUrl + ", nodes: " + parentNodeInfo.getChildCount());
 
         sendBroadcast(intent);
     }
