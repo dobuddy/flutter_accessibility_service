@@ -35,7 +35,11 @@ public class AccessibilityListener extends AccessibilityService {
 
     private static Map<String, String> getSupportedBrowsers() {
         Map<String, String> browsers = new HashMap<>();
+        browsers.put("org.chromium.webview_shell", "org.chromium.webview_shell:id/url_field");
         browsers.put("com.android.chrome", "com.android.chrome:id/url_bar");
+        browsers.put("org.mozilla.firefox", "org.mozilla.firefox:id/mozac_browser_toolbar_url_view");
+        browsers.put("com.opera.browser", "com.opera.browser:id/url_field");
+        browsers.put("com.brave.browser", "com.brave.browser:id/url_bar");
         return browsers;
     }
 
