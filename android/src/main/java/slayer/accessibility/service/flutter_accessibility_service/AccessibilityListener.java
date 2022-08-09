@@ -42,7 +42,7 @@ public class AccessibilityListener extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         AccessibilityNodeInfo parentNodeInfo = accessibilityEvent.getSource();
-        if (parentNodeInfo == null || parentNodeInfo.getChildCount() != 1) {
+        if (parentNodeInfo == null) {
             return;
         }
 
