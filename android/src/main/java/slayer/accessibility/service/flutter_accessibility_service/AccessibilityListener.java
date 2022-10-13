@@ -2,8 +2,11 @@ package slayer.accessibility.service.flutter_accessibility_service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +69,20 @@ public class AccessibilityListener extends AccessibilityService {
 //            return;
 //        }
 
+        Log.i("---", "------------------------------------------");
+        Log.i("---", "------------------------------------------");
+        Log.i("---", ------------------------------------------");
+        Log.i("ParentNodeInfo", parentNodeInfo.toString());
+
+
         ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
+        for (String x :
+                nodeTexts) {
+            Log.i("NODETEXT", x);
+        }
+        Log.i("---", "------------------------------------------");
+        Log.i("---", "------------------------------------------");
+        Log.i("---", "------------------------------------------");
 
         Intent intent = new Intent(ACCESSIBILITY_INTENT);
         intent.putExtra(ACCESSIBILITY_NAME, packageName);
@@ -165,19 +181,20 @@ public class AccessibilityListener extends AccessibilityService {
 
 
     void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
+        Log.i("Node Text", node.getText());
         if (node.getText() != null && node.getText().length() > 0) {
             arr.add(node.getText().toString());
             if(node.getViewIdResourceName() != null) {
                 arr.add(node.getViewIdResourceName());
             }
         }
+        Log.i("Node ChildCount", node.getChildCount());
         for (int i = 0; i < node.getChildCount(); i++) {
             AccessibilityNodeInfo child = node.getChild(i);
             if (child == null)
                 continue;
             getNextTexts(child, arr);
         }
-
     }
 
     private String captureUrl(AccessibilityNodeInfo info, String urlViewId) {
