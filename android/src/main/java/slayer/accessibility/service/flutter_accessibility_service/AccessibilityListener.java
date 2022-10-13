@@ -63,10 +63,10 @@ public class AccessibilityListener extends AccessibilityService {
             return;
         }
 
-        String capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
-        if (capturedUrl == null) {
-            return;
-        }
+//        String capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
+//        if (capturedUrl == null) {
+//            return;
+//        }
 
         Intent intent = new Intent(ACCESSIBILITY_INTENT);
         intent.putExtra(ACCESSIBILITY_NAME, packageName);
