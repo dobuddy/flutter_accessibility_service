@@ -188,7 +188,7 @@ public class AccessibilityListener extends AccessibilityService {
                 arr.add(node.getViewIdResourceName());
             }
         }
-        Log.i("Node ChildCount", node.getChildCount());
+        Log.i("Node ChildCount", "" + node.getChildCount());
         for (int i = 0; i < node.getChildCount(); i++) {
             AccessibilityNodeInfo child = node.getChild(i);
             if (child == null)
