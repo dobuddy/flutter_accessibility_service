@@ -1,14 +1,9 @@
 package slayer.accessibility.service.flutter_accessibility_service;
 
 import android.accessibilityservice.AccessibilityService;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.graphics.Rect;
-import android.os.Build;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityWindowInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +26,7 @@ public class AccessibilityListener extends AccessibilityService {
 //    public static String ACCESSIBILITY_IS_PIP = "isInPictureInPictureMode";
 //    public static String ACCESSIBILITY_WINDOW_TYPE = "windowType";
 //    public static String ACCESSIBILITY_SCREEN_BOUNDS = "screenBounds";
-//    public static String ACCESSIBILITY_NODES_TEXT = "nodesText";
+    public static String ACCESSIBILITY_NODES_TEXT = "nodesText";
 
     private static Map<String, String> getSupportedBrowsers() {
         Map<String, String> browsers = new HashMap<>();
@@ -71,29 +66,37 @@ public class AccessibilityListener extends AccessibilityService {
 //            return;
 //        }
 
+        ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
+
         Intent intent = new Intent(ACCESSIBILITY_INTENT);
         intent.putExtra(ACCESSIBILITY_NAME, packageName);
         intent.putExtra(ACCESSIBILITY_TEXT, capturedUrl);
-
+        intent.putExtra(ACCESSIBILITY_NODES_TEXT, nodeTexts);
         sendBroadcast(intent);
+    }
+
+    private ArrayList<String> getNodeTexts(AccessibilityNodeInfo parentNodeInfo) {
+        ArrayList<String> nextTexts = new ArrayList<>();
+        getNextTexts(parentNodeInfo, nextTexts);
+        return nextTexts;
     }
 
     // @Override
     // public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
     //     final int eventType = accessibilityEvent.getEventType();
-    //     AccessibilityNodeInfo parentNodeInfo = accessibilityEvent.getSource();
+//         AccessibilityNodeInfo parentNodeInfo = accessibilityEvent.getSource();
     //     AccessibilityWindowInfo windowInfo = null;
-    //     List<String> nextTexts = new ArrayList<>();
+//         List<String> nextTexts = new ArrayList<>();
 
 
     //     if (parentNodeInfo == null) {
     //         return;
     //     }
 
-    //     parentNodeInfo = parentNodeInfo.getParent();
-    //     if (parentNodeInfo == null) {
-    //         parentNodeInfo = accessibilityEvent.getSource();
-    //     }
+//         parentNodeInfo = parentNodeInfo.getParent();
+//         if (parentNodeInfo == null) {
+//             parentNodeInfo = accessibilityEvent.getSource();
+//         }
 
     //     String packageName = parentNodeInfo.getPackageName().toString();
 
@@ -123,23 +126,23 @@ public class AccessibilityListener extends AccessibilityService {
     //         intent.putExtra(ACCESSIBILITY_CHANGES_TYPES, accessibilityEvent.getContentChangeTypes());
     //     }
 
-    //     //Gets the text of this node.
-    //     // String captureUrl = captureUrl(parentNodeInfo);
-    //     // if (captureUrl != null) {
-    //     //     intent.putExtra(ACCESSIBILITY_TEXT, captureUrl);
-    //     // } else {
-    //     //     if (parentNodeInfo.getText() != null) {        
-    //     //         intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
-    //     //     }
-    //     // }
-    //     if (parentNodeInfo.getText() != null) {        
-    //         intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
-    //     }
-        
-    //     getNextTexts(parentNodeInfo, nextTexts);
+         //Gets the text of this node.
+         // String captureUrl = captureUrl(parentNodeInfo);
+         // if (captureUrl != null) {
+         //     intent.putExtra(ACCESSIBILITY_TEXT, captureUrl);
+         // } else {
+         //     if (parentNodeInfo.getText() != null) {
+         //         intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
+         //     }
+         // }
+//         if (parentNodeInfo.getText() != null) {
+//             intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
+//         }
+//
+//         getNextTexts(parentNodeInfo, nextTexts);
 
     //     //Gets the text of sub nodes.
-    //     intent.putStringArrayListExtra(ACCESSIBILITY_NODES_TEXT, (ArrayList<String>) nextTexts);
+//         intent.putStringArrayListExtra(ACCESSIBILITY_NODES_TEXT, (ArrayList<String>) nextTexts);
         
 
     //     if (windowInfo != null) {
@@ -161,21 +164,21 @@ public class AccessibilityListener extends AccessibilityService {
     // }
 
 
-//    void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
-//        if (node.getText() != null && node.getText().length() > 0) {
-//            arr.add(node.getText().toString());
-//            if(node.getViewIdResourceName() != null) {
-//                arr.add(node.getViewIdResourceName());
-//            }
-//        }
-//        for (int i = 0; i < node.getChildCount(); i++) {
-//            AccessibilityNodeInfo child = node.getChild(i);
-//            if (child == null)
-//                continue;
-//            getNextTexts(child, arr);
-//        }
-//
-//    }
+    void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
+        if (node.getText() != null && node.getText().length() > 0) {
+            arr.add(node.getText().toString());
+            if(node.getViewIdResourceName() != null) {
+                arr.add(node.getViewIdResourceName());
+            }
+        }
+        for (int i = 0; i < node.getChildCount(); i++) {
+            AccessibilityNodeInfo child = node.getChild(i);
+            if (child == null)
+                continue;
+            getNextTexts(child, arr);
+        }
+
+    }
 
     private String captureUrl(AccessibilityNodeInfo info, String urlViewId) {
         List<AccessibilityNodeInfo> nodes = info.findAccessibilityNodeInfosByViewId(urlViewId);

@@ -53,7 +53,7 @@ class AccessibilityEvent {
 
   /// Get the node childrens and sub childrens text
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo#getChild(int)
-  // List<String>? nodesText;
+  List<String>? nodesText;
 
   AccessibilityEvent({
     // this.actionType,
@@ -68,12 +68,12 @@ class AccessibilityEvent {
     // this.isFocused,
     // this.isPip,
     // this.screenBounds,
-    // this.nodesText,
+    this.nodesText,
   });
 
   AccessibilityEvent.fromMap(Map<dynamic, dynamic> map)
       : packageName = map['packageName'],
-        capturedUrl = map['capturedUrl'];
+        capturedUrl = map['capturedUrl'],
   // actionType = map['actionType'];
   // eventTime = DateTime.now();
   // packageName = ;
@@ -93,11 +93,12 @@ class AccessibilityEvent {
   // screenBounds = map['screenBounds'] != null
   //     ? ScreenBounds.fromMap(map['screenBounds'])
   //     : null;
-  // nodesText = map['nodesText'] == null
-  //     ? []
-  //     : [
-  //         ...{...map['nodesText']}
-  //       ];
+        nodesText = map['nodesText'] == null
+            ? []
+            : [
+          ...{...map['nodesText']}
+        ];
+
   // }
 
   @override
@@ -105,6 +106,7 @@ class AccessibilityEvent {
     return '''AccessibilityEvent: (
        Package Name: $packageName 
        Captured Url: $capturedUrl 
+       Nodes Text: $nodesText 
        )''';
   }
 
