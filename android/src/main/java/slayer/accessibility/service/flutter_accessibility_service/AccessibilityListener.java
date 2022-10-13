@@ -64,6 +64,9 @@ public class AccessibilityListener extends AccessibilityService {
         }
 
         String capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
+        if (capturedUrl == null ) {
+            capturedUrl = "??????";
+        }
 //        if (capturedUrl == null) {
 //            return;
 //        }
