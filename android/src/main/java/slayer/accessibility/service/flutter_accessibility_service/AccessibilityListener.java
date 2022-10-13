@@ -71,7 +71,7 @@ public class AccessibilityListener extends AccessibilityService {
 
         Log.i("---", "------------------------------------------");
         Log.i("---", "------------------------------------------");
-        Log.i("---", ------------------------------------------");
+        Log.i("---", "------------------------------------------");
         Log.i("ParentNodeInfo", parentNodeInfo.toString());
 
 
