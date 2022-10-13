@@ -26,6 +26,10 @@ class FlutterAccessibilityService {
     throw Exception("Accessibility API exclusively available on Android!");
   }
 
+  static void requestNodeLogging() async {
+    await _methodeChannel.invokeMethod('requestNodeLogging');
+  }
+
   /// request accessibility permission
   /// it will open the accessibility settings page and return `true` once the permission granted.
   static Future<bool> requestAccessibilityPermission() async {

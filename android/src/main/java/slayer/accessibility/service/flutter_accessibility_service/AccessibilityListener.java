@@ -15,6 +15,7 @@ import java.util.Map;
 
 
 public class AccessibilityListener extends AccessibilityService {
+    public static boolean NODE_LOGGING = false;
 
     public static String ACCESSIBILITY_INTENT = "accessibility_event";
     public static String ACCESSIBILITY_NAME = "packageName";
@@ -58,23 +59,25 @@ public class AccessibilityListener extends AccessibilityService {
         if(!supportedBrowsers.containsKey(packageName)) {
             return;
         }
-
-//        Log.i("---", "------------------------------------------");
-//        Log.i("---", "------------------------------------------");
-//        Log.i("---", "------------------------------------------");
-//        Log.i("ParentNodeInfo", parentNodeInfo.toString());
-//
-//
-//        ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
-//        for (String x :
-//                nodeTexts) {
-//            Log.i("NODETEXT", x);
-//        }
-//        Log.i("---", "------------------------------------------");
-//        Log.i("---", "------------------------------------------");
-//        Log.i("---", "------------------------------------------");
-
         String capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
+
+        if (NODE_LOGGING) {
+            Log.i("---", "------------------------------------------");
+            Log.i("---", "------------------------------------------");
+            Log.i("---", "------------------------------------------");
+            Log.i("ParentNodeInfo", parentNodeInfo.toString());
+            Log.i("capturedUrl", "" + capturedUrl);
+
+            ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
+            for (String x :
+                    nodeTexts) {
+                Log.i("NODETEXT", x);
+            }
+            Log.i("---", "------------------------------------------");
+            Log.i("---", "------------------------------------------");
+            Log.i("---", "------------------------------------------");
+        }
+
         if (capturedUrl == null) {
             return;
         }
@@ -86,11 +89,11 @@ public class AccessibilityListener extends AccessibilityService {
         sendBroadcast(intent);
     }
 
-//    private ArrayList<String> getNodeTexts(AccessibilityNodeInfo parentNodeInfo) {
-//        ArrayList<String> nextTexts = new ArrayList<>();
-//        getNextTexts(parentNodeInfo, nextTexts);
-//        return nextTexts;
-//    }
+    private ArrayList<String> getNodeTexts(AccessibilityNodeInfo parentNodeInfo) {
+        ArrayList<String> nextTexts = new ArrayList<>();
+        getNextTexts(parentNodeInfo, nextTexts);
+        return nextTexts;
+    }
 
     // @Override
     // public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
@@ -175,22 +178,22 @@ public class AccessibilityListener extends AccessibilityService {
     // }
 
 
-//    void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
-//        Log.i("Node Text", "" + node.getText());
-//        if (node.getText() != null && node.getText().length() > 0) {
-//            arr.add(node.getText().toString());
-//            if(node.getViewIdResourceName() != null) {
-//                arr.add(node.getViewIdResourceName());
-//            }
-//        }
-//        Log.i("Node ChildCount", "" + node.getChildCount());
-//        for (int i = 0; i < node.getChildCount(); i++) {
-//            AccessibilityNodeInfo child = node.getChild(i);
-//            if (child == null)
-//                continue;
-//            getNextTexts(child, arr);
-//        }
-//    }
+    void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
+        Log.i("Node Text", "" + node.getText());
+        if (node.getText() != null && node.getText().length() > 0) {
+            arr.add(node.getText().toString());
+            if(node.getViewIdResourceName() != null) {
+                arr.add(node.getViewIdResourceName());
+            }
+        }
+        Log.i("Node ChildCount", "" + node.getChildCount());
+        for (int i = 0; i < node.getChildCount(); i++) {
+            AccessibilityNodeInfo child = node.getChild(i);
+            if (child == null)
+                continue;
+            getNextTexts(child, arr);
+        }
+    }
 
     private String captureUrl(AccessibilityNodeInfo info, String urlViewId) {
         List<AccessibilityNodeInfo> nodes = info.findAccessibilityNodeInfosByViewId(urlViewId);
