@@ -56,6 +56,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
             mActivity.startActivityForResult(intent, REQUEST_CODE_FOR_ACCESSIBILITY);
         } else if (call.method.equals("requestNodeLogging")) {
             AccessibilityListener.NODE_LOGGING = true;
+            result.success(AccessibilityListener.NODE_LOGGING);
         } else {
             result.notImplemented();
         }
