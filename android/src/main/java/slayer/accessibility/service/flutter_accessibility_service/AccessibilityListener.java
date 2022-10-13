@@ -40,6 +40,12 @@ public class AccessibilityListener extends AccessibilityService {
         browsers.put("org.mozilla.firefox", "org.mozilla.firefox:id/mozac_browser_toolbar_url_view");
         browsers.put("com.opera.browser", "com.opera.browser:id/url_field");
         browsers.put("com.brave.browser", "com.brave.browser:id/url_bar");
+        browsers.put("com.duckduckgo.mobile.android", "com.duckduckgo.mobile.android:id/???");
+        browsers.put("com.sec.android.app.sbrowser", "com.sec.android.app.sbrowser:id/???");
+        browsers.put("com.microsoft.emmx", "com.microsoft.emmx:id/???");
+        browsers.put("com.ecosia.android", "com.ecosia.android:id/???");
+        browsers.put("com.UCMobile.intl", "com.UCMobile.intl:id/???");
+
         return browsers;
     }
 
