@@ -29,7 +29,7 @@ public class AccessibilityListener extends AccessibilityService {
 //    public static String ACCESSIBILITY_IS_PIP = "isInPictureInPictureMode";
 //    public static String ACCESSIBILITY_WINDOW_TYPE = "windowType";
 //    public static String ACCESSIBILITY_SCREEN_BOUNDS = "screenBounds";
-    public static String ACCESSIBILITY_NODES_TEXT = "nodesText";
+//    public static String ACCESSIBILITY_NODES_TEXT = "nodesText";
 
     private static Map<String, String> getSupportedBrowsers() {
         Map<String, String> browsers = new HashMap<>();
@@ -38,11 +38,9 @@ public class AccessibilityListener extends AccessibilityService {
         browsers.put("org.mozilla.firefox", "org.mozilla.firefox:id/mozac_browser_toolbar_url_view");
         browsers.put("com.opera.browser", "com.opera.browser:id/url_field");
         browsers.put("com.brave.browser", "com.brave.browser:id/url_bar");
-        browsers.put("com.duckduckgo.mobile.android", "com.duckduckgo.mobile.android:id/???");
-        browsers.put("com.sec.android.app.sbrowser", "com.sec.android.app.sbrowser:id/???");
-        browsers.put("com.microsoft.emmx", "com.microsoft.emmx:id/???");
-        browsers.put("com.ecosia.android", "com.ecosia.android:id/???");
-        browsers.put("com.UCMobile.intl", "com.UCMobile.intl:id/???");
+        browsers.put("com.duckduckgo.mobile.android", "com.duckduckgo.mobile.android:id/omnibarTextInput");
+        browsers.put("com.sec.android.app.sbrowser", "com.sec.android.app.sbrowser:id/location_bar_edit_text");
+        browsers.put("com.microsoft.emmx", "com.microsoft.emmx:id/url_bar");
 
         return browsers;
     }
@@ -61,41 +59,38 @@ public class AccessibilityListener extends AccessibilityService {
             return;
         }
 
-        String capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
-        if (capturedUrl == null ) {
-            capturedUrl = "??????";
-        }
-//        if (capturedUrl == null) {
-//            return;
+//        Log.i("---", "------------------------------------------");
+//        Log.i("---", "------------------------------------------");
+//        Log.i("---", "------------------------------------------");
+//        Log.i("ParentNodeInfo", parentNodeInfo.toString());
+//
+//
+//        ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
+//        for (String x :
+//                nodeTexts) {
+//            Log.i("NODETEXT", x);
 //        }
+//        Log.i("---", "------------------------------------------");
+//        Log.i("---", "------------------------------------------");
+//        Log.i("---", "------------------------------------------");
 
-        Log.i("---", "------------------------------------------");
-        Log.i("---", "------------------------------------------");
-        Log.i("---", "------------------------------------------");
-        Log.i("ParentNodeInfo", parentNodeInfo.toString());
-
-
-        ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
-        for (String x :
-                nodeTexts) {
-            Log.i("NODETEXT", x);
+        String capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
+        if (capturedUrl == null) {
+            return;
         }
-        Log.i("---", "------------------------------------------");
-        Log.i("---", "------------------------------------------");
-        Log.i("---", "------------------------------------------");
 
         Intent intent = new Intent(ACCESSIBILITY_INTENT);
         intent.putExtra(ACCESSIBILITY_NAME, packageName);
         intent.putExtra(ACCESSIBILITY_TEXT, capturedUrl);
-        intent.putExtra(ACCESSIBILITY_NODES_TEXT, nodeTexts);
+//        intent.putExtra(ACCESSIBILITY_NODES_TEXT, nodeTexts);
         sendBroadcast(intent);
     }
 
-    private ArrayList<String> getNodeTexts(AccessibilityNodeInfo parentNodeInfo) {
-        ArrayList<String> nextTexts = new ArrayList<>();
-        getNextTexts(parentNodeInfo, nextTexts);
-        return nextTexts;
-    }
+//    private ArrayList<String> getNodeTexts(AccessibilityNodeInfo parentNodeInfo) {
+//        ArrayList<String> nextTexts = new ArrayList<>();
+//        getNextTexts(parentNodeInfo, nextTexts);
+//        return nextTexts;
+//    }
 
     // @Override
     // public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
@@ -180,22 +175,22 @@ public class AccessibilityListener extends AccessibilityService {
     // }
 
 
-    void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
-        Log.i("Node Text", "" + node.getText());
-        if (node.getText() != null && node.getText().length() > 0) {
-            arr.add(node.getText().toString());
-            if(node.getViewIdResourceName() != null) {
-                arr.add(node.getViewIdResourceName());
-            }
-        }
-        Log.i("Node ChildCount", "" + node.getChildCount());
-        for (int i = 0; i < node.getChildCount(); i++) {
-            AccessibilityNodeInfo child = node.getChild(i);
-            if (child == null)
-                continue;
-            getNextTexts(child, arr);
-        }
-    }
+//    void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
+//        Log.i("Node Text", "" + node.getText());
+//        if (node.getText() != null && node.getText().length() > 0) {
+//            arr.add(node.getText().toString());
+//            if(node.getViewIdResourceName() != null) {
+//                arr.add(node.getViewIdResourceName());
+//            }
+//        }
+//        Log.i("Node ChildCount", "" + node.getChildCount());
+//        for (int i = 0; i < node.getChildCount(); i++) {
+//            AccessibilityNodeInfo child = node.getChild(i);
+//            if (child == null)
+//                continue;
+//            getNextTexts(child, arr);
+//        }
+//    }
 
     private String captureUrl(AccessibilityNodeInfo info, String urlViewId) {
         List<AccessibilityNodeInfo> nodes = info.findAccessibilityNodeInfosByViewId(urlViewId);
