@@ -181,7 +181,7 @@ public class AccessibilityListener extends AccessibilityService {
 
 
     void getNextTexts(AccessibilityNodeInfo node, List<String> arr) {
-        Log.i("Node Text", node.getText());
+        Log.i("Node Text", "" + node.getText());
         if (node.getText() != null && node.getText().length() > 0) {
             arr.add(node.getText().toString());
             if(node.getViewIdResourceName() != null) {
