@@ -93,9 +93,9 @@ class AccessibilityEvent {
   // screenBounds = map['screenBounds'] != null
   //     ? ScreenBounds.fromMap(map['screenBounds'])
   //     : null;
-  // nodesText = map['nodesText'] == null
-  //     ? []
-  //     : [
+  //       nodesText = map['nodesText'] == null
+  //           ? []
+  //           : [
   //         ...{...map['nodesText']}
   //       ];
   // }

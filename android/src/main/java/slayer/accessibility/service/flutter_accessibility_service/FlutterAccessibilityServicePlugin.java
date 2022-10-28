@@ -54,6 +54,9 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
         } else if (call.method.equals("requestAccessibilityPermission")) {
             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
             mActivity.startActivityForResult(intent, REQUEST_CODE_FOR_ACCESSIBILITY);
+        } else if (call.method.equals("requestNodeLogging")) {
+            AccessibilityListener.NODE_LOGGING = true;
+            result.success(AccessibilityListener.NODE_LOGGING);
         } else {
             result.notImplemented();
         }
@@ -83,6 +86,8 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
             Intent listenerIntent = new Intent(context, AccessibilityListener.class);
             context.startService(listenerIntent);
             Log.i("AccessibilityPlugin", "Started the accessibility tracking service.");
+        } else {
+            Log.e("AccessibilityPlugin", "!!! DID NOT Start the accessibility tracking service.");
         }
     }
 
