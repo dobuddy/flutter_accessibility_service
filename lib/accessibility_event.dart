@@ -1,6 +1,6 @@
-// import 'package:flutter_accessibility_service/utils.dart';
+import 'package:flutter_accessibility_service/utils.dart';
 
-// import 'constants.dart';
+import 'constants.dart';
 
 class AccessibilityEvent {
   /// the performed action that triggered this event
@@ -17,11 +17,13 @@ class AccessibilityEvent {
 
   /// the event type.
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getEventTime()
-  // EventType? eventType;
+  final EventType? eventType;
 
   /// Gets the text of this node.
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo#getText()
   final String capturedUrl;
+
+  final bool isSupportedBrowser;
 
   /// the bit mask of change types signaled by a `TYPE_WINDOW_CONTENT_CHANGED` event or `TYPE_WINDOW_STATE_CHANGED`. A single event may represent multiple change types
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getContentChangeTypes()
@@ -59,8 +61,9 @@ class AccessibilityEvent {
     // this.actionType,
     // this.eventTime,
     required this.packageName,
-    // this.eventType,
+    required this.eventType,
     required this.capturedUrl,
+    required this.isSupportedBrowser
     // this.contentChangeTypes,
     // this.movementGranularity,
     // this.windowType,
@@ -73,7 +76,10 @@ class AccessibilityEvent {
 
   AccessibilityEvent.fromMap(Map<dynamic, dynamic> map)
       : packageName = map['packageName'],
-        capturedUrl = map['capturedUrl'];
+        capturedUrl = map['capturedUrl'],
+        eventType =
+          map['eventType'] == null ? null : Utils.eventType[map['eventType']],
+        isSupportedBrowser = map['isSupportedBrowser'];
   // actionType = map['actionType'];
   // eventTime = DateTime.now();
   // packageName = ;
@@ -103,8 +109,10 @@ class AccessibilityEvent {
   @override
   String toString() {
     return '''AccessibilityEvent: (
+       Event Type: $eventType
        Package Name: $packageName 
-       Captured Url: $capturedUrl 
+       Captured Url: $capturedUrl
+       Supported Browser: $isSupportedBrowser 
        )''';
   }
 

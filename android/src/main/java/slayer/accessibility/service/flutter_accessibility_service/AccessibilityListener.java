@@ -19,8 +19,9 @@ public class AccessibilityListener extends AccessibilityService {
 
     public static String ACCESSIBILITY_INTENT = "accessibility_event";
     public static String ACCESSIBILITY_NAME = "packageName";
-//    public static String ACCESSIBILITY_EVENT_TYPE = "eventType";
+    public static String ACCESSIBILITY_EVENT_TYPE = "eventType";
     public static String ACCESSIBILITY_TEXT = "capturedText";
+    public static String ACCESSIBILITY_IS_SUPPORTED_BROWSER = "isSupportedBrowser";
 //    public static String ACCESSIBILITY_ACTION = "action";
 //    public static String ACCESSIBILITY_EVENT_TIME = "eventTime";
 //    public static String ACCESSIBILITY_CHANGES_TYPES = "contentChangeTypes";
@@ -49,41 +50,47 @@ public class AccessibilityListener extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         AccessibilityNodeInfo parentNodeInfo = accessibilityEvent.getSource();
-        if (parentNodeInfo == null || parentNodeInfo.getChildCount() != 0) {
+        if (parentNodeInfo == null) {
             return;
         }
 
         String packageName = parentNodeInfo.getPackageName().toString();
         Map<String, String> supportedBrowsers = getSupportedBrowsers();
+        final boolean isSupportedBrowser = supportedBrowsers.containsKey(packageName);
+        final int eventType = accessibilityEvent.getEventType ();
+        String capturedUrl = "N/A";
 
-        if(!supportedBrowsers.containsKey(packageName)) {
-            return;
-        }
-        String capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
+        if (isSupportedBrowser) {
+            capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
 
-        if (NODE_LOGGING) {
-            Log.i("onAccessibilityEvent", "----------------vvvv----------------");
-            Log.i("onAccessibilityEvent", "parentNodeInfo: " + parentNodeInfo.toString());
-            Log.i("onAccessibilityEvent", "capturedUrl: " + capturedUrl);
+            if (NODE_LOGGING) {
+                Log.i("onAccessibilityEvent", "----------------vvvv----------------");
+                Log.i("onAccessibilityEvent", "parentNodeInfo: " + parentNodeInfo.toString());
+                Log.i("onAccessibilityEvent", "capturedUrl: " + capturedUrl);
 
-            ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
-            for (String x :
-                    nodeTexts) {
-                Log.i("onAccessibilityEvent", "NodeText: " + x);
+                ArrayList<String> nodeTexts = getNodeTexts(parentNodeInfo);
+                for (String x :
+                        nodeTexts) {
+                    Log.i("onAccessibilityEvent", "NodeText: " + x);
+                }
+                Log.i("onAccessibilityEvent", "----------------^^^^----------------");
             }
-            Log.i("onAccessibilityEvent", "----------------^^^^----------------");
-        }
 
-        if (capturedUrl == null) {
-            return;
+            if (capturedUrl == null) {
+                return;
+            }
         }
 
         Intent intent = new Intent(ACCESSIBILITY_INTENT);
         intent.putExtra(ACCESSIBILITY_NAME, packageName);
+        intent.putExtra(ACCESSIBILITY_EVENT_TYPE, eventType);
         intent.putExtra(ACCESSIBILITY_TEXT, capturedUrl);
+        intent.putExtra(ACCESSIBILITY_IS_SUPPORTED_BROWSER, isSupportedBrowser);
 //        intent.putExtra(ACCESSIBILITY_NODES_TEXT, nodeTexts);
         Log.i("onAccssbltyEvnt.intent", "PackageName: " + packageName);
+        Log.i("onAccssbltyEvnt.intent", "EventType: " + String.valueOf(eventType));
         Log.i("onAccssbltyEvnt.intent", "CapturedUrl: " + capturedUrl);
+        Log.i("onAccssbltyEvnt.intent", "SupportedBrowser: " + String.valueOf(isSupportedBrowser));
         sendBroadcast(intent);
     }
 
