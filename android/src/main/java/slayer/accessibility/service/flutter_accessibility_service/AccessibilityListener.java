@@ -33,17 +33,20 @@ public class AccessibilityListener extends AccessibilityService {
 //    public static String ACCESSIBILITY_SCREEN_BOUNDS = "screenBounds";
 //    public static String ACCESSIBILITY_NODES_TEXT = "nodesText";
 
-    private static Map<String, String> getSupportedBrowsers() {
-        Map<String, String> browsers = new HashMap<>();
-        browsers.put("org.chromium.webview_shell", "org.chromium.webview_shell:id/url_field");
-        browsers.put("com.android.chrome", "com.android.chrome:id/url_bar");
-        browsers.put("org.mozilla.firefox", "org.mozilla.firefox:id/mozac_browser_toolbar_url_view");
-        browsers.put("com.opera.browser", "com.opera.browser:id/url_field");
-        browsers.put("com.brave.browser", "com.brave.browser:id/url_bar");
-        browsers.put("com.duckduckgo.mobile.android", "com.duckduckgo.mobile.android:id/omnibarTextInput");
-        browsers.put("com.sec.android.app.sbrowser", "com.sec.android.app.sbrowser:id/location_bar_edit_text");
-        browsers.put("com.microsoft.emmx", "com.microsoft.emmx:id/url_bar");
+    private static Map<String, String> browsers;
 
+    private static Map<String, String> getSupportedBrowsers() {
+        if (browsers == null) {
+            browsers = new HashMap<>();
+            browsers.put("org.chromium.webview_shell", "org.chromium.webview_shell:id/url_field");
+            browsers.put("com.android.chrome", "com.android.chrome:id/url_bar");
+            browsers.put("org.mozilla.firefox", "org.mozilla.firefox:id/mozac_browser_toolbar_url_view");
+            browsers.put("com.opera.browser", "com.opera.browser:id/url_field");
+            browsers.put("com.brave.browser", "com.brave.browser:id/url_bar");
+            browsers.put("com.duckduckgo.mobile.android", "com.duckduckgo.mobile.android:id/omnibarTextInput");
+            browsers.put("com.sec.android.app.sbrowser", "com.sec.android.app.sbrowser:id/location_bar_edit_text");
+            browsers.put("com.microsoft.emmx", "com.microsoft.emmx:id/url_bar");
+        }
         return browsers;
     }
 
@@ -57,7 +60,7 @@ public class AccessibilityListener extends AccessibilityService {
         String packageName = parentNodeInfo.getPackageName().toString();
         Map<String, String> supportedBrowsers = getSupportedBrowsers();
         final boolean isSupportedBrowser = supportedBrowsers.containsKey(packageName);
-        final int eventType = accessibilityEvent.getEventType ();
+        final int eventType = accessibilityEvent.getEventType();
         String capturedUrl = "N/A";
 
         if (isSupportedBrowser) {
@@ -145,15 +148,15 @@ public class AccessibilityListener extends AccessibilityService {
     //         intent.putExtra(ACCESSIBILITY_CHANGES_TYPES, accessibilityEvent.getContentChangeTypes());
     //     }
 
-         //Gets the text of this node.
-         // String captureUrl = captureUrl(parentNodeInfo);
-         // if (captureUrl != null) {
-         //     intent.putExtra(ACCESSIBILITY_TEXT, captureUrl);
-         // } else {
-         //     if (parentNodeInfo.getText() != null) {
-         //         intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
-         //     }
-         // }
+    //Gets the text of this node.
+    // String captureUrl = captureUrl(parentNodeInfo);
+    // if (captureUrl != null) {
+    //     intent.putExtra(ACCESSIBILITY_TEXT, captureUrl);
+    // } else {
+    //     if (parentNodeInfo.getText() != null) {
+    //         intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
+    //     }
+    // }
 //         if (parentNodeInfo.getText() != null) {
 //             intent.putExtra(ACCESSIBILITY_TEXT, parentNodeInfo.getText().toString());
 //         }
@@ -162,7 +165,7 @@ public class AccessibilityListener extends AccessibilityService {
 
     //     //Gets the text of sub nodes.
 //         intent.putStringArrayListExtra(ACCESSIBILITY_NODES_TEXT, (ArrayList<String>) nextTexts);
-        
+
 
     //     if (windowInfo != null) {
     //         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -187,7 +190,7 @@ public class AccessibilityListener extends AccessibilityService {
         Log.i("Node Text", "" + node.getText());
         if (node.getText() != null && node.getText().length() > 0) {
             arr.add(node.getText().toString());
-            if(node.getViewIdResourceName() != null) {
+            if (node.getViewIdResourceName() != null) {
                 arr.add(node.getViewIdResourceName());
             }
         }
@@ -208,7 +211,7 @@ public class AccessibilityListener extends AccessibilityService {
 
         AccessibilityNodeInfo addressBarNodeInfo = nodes.get(0);
         if (addressBarNodeInfo.getText() == null) {
-           return null;
+            return null;
         }
 
         return addressBarNodeInfo.getText().toString();
