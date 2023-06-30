@@ -2,6 +2,8 @@ package slayer.accessibility.service.flutter_accessibility_service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -35,6 +37,10 @@ public class AccessibilityListener extends AccessibilityService {
 
     private static Map<String, String> browsers;
 
+    private static String ignoredPackageName = "";
+
+    private static PackageManager packageManager;
+
     private static Map<String, String> getSupportedBrowsers() {
         if (browsers == null) {
             browsers = new HashMap<>();
@@ -50,6 +56,14 @@ public class AccessibilityListener extends AccessibilityService {
         return browsers;
     }
 
+    public static void setIgnoredPackageName(String packageName) {
+        ignoredPackageName = packageName;
+    }
+
+    public static void setPackageManager(PackageManager pm) {
+        packageManager = pm;
+    }
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         AccessibilityNodeInfo parentNodeInfo = accessibilityEvent.getSource();
@@ -58,6 +72,10 @@ public class AccessibilityListener extends AccessibilityService {
         }
 
         String packageName = parentNodeInfo.getPackageName().toString();
+        if (packageName.equals(ignoredPackageName) || isSystemApp(packageName)) {
+            return;
+        }
+
         Map<String, String> supportedBrowsers = getSupportedBrowsers();
         final boolean isSupportedBrowser = supportedBrowsers.containsKey(packageName);
         final int eventType = accessibilityEvent.getEventType();
@@ -101,6 +119,16 @@ public class AccessibilityListener extends AccessibilityService {
         ArrayList<String> nextTexts = new ArrayList<>();
         getNextTexts(parentNodeInfo, nextTexts);
         return nextTexts;
+    }
+
+    private boolean isSystemApp(String packageName) {
+        try {
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
+            return (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     // @Override

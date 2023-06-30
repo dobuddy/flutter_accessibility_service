@@ -39,6 +39,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         context = flutterPluginBinding.getApplicationContext();
+        AccessibilityListener.setPackageManager(context.getPackageManager());
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), CHANNEL_TAG);
         channel.setMethodCallHandler(this);
         eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), EVENT_TAG);
@@ -117,6 +118,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         this.mActivity = binding.getActivity();
+        AccessibilityListener.setIgnoredPackageName(mActivity.getPackageName());
         binding.addActivityResultListener(this);
     }
 
