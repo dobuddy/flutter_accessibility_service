@@ -1,6 +1,6 @@
 name: flutter_accessibility_service
 description: Flutter plugin for interacting with Accessibility Service in Android (Forked).
-version: 0.2.5
+version: 0.2.6
 homepage: https://github.com/dobuddy/flutter_accessibility_service
 
 environment:

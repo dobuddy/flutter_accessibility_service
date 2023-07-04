@@ -72,7 +72,7 @@ public class AccessibilityListener extends AccessibilityService {
         }
 
         String packageName = parentNodeInfo.getPackageName().toString();
-        if (packageName.equals(ignoredPackageName) || isSystemApp(packageName)) {
+        if (packageName.equals(ignoredPackageName)) {
             return;
         }
 
@@ -119,16 +119,6 @@ public class AccessibilityListener extends AccessibilityService {
         ArrayList<String> nextTexts = new ArrayList<>();
         getNextTexts(parentNodeInfo, nextTexts);
         return nextTexts;
-    }
-
-    private boolean isSystemApp(String packageName) {
-        try {
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
-            return (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     // @Override
