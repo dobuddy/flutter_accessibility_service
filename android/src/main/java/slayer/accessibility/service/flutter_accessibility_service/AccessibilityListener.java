@@ -98,16 +98,20 @@ public class AccessibilityListener extends AccessibilityService {
                 return;
             }
 
+            Map<String, String> supportedBrowsers = getSupportedBrowsers();
+            final boolean isSupportedBrowser = supportedBrowsers.containsKey(packageName);
+            String capturedUrl;
             if (isSupportedBrowser) {
                 capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
                 if (capturedUrl == null) {
                     return;
                 }
+            } else {
+                capturedUrl = "N/A";
             }
 
 
             String nodeId = generateNodeId(parentNodeInfo);
-            String packageName = parentNodeInfo.getPackageName().toString();
             storeNode(nodeId, parentNodeInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 windowInfo = parentNodeInfo.getWindow();
