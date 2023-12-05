@@ -60,6 +60,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         context = flutterPluginBinding.getApplicationContext();
+        AccessibilityListener.setPackageManager(context.getPackageManager());
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), CHANNEL_TAG);
         channel.setMethodCallHandler(this);
         eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), EVENT_TAG);
@@ -170,7 +171,12 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
         channel.setMethodCallHandler(null);
         eventChannel.setStreamHandler(null);
         context.unregisterReceiver(actionsReceiver);
+        if (accessibilityReceiver != null) {
+            context.unregisterReceiver(accessibilityReceiver);
+            accessibilityReceiver = null;
+        }
     }
+
     @SuppressLint("WrongConstant")
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
@@ -182,7 +188,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
             accessibilityReceiver = new AccessibilityReceiver(events);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 context.registerReceiver(accessibilityReceiver, intentFilter, Context.RECEIVER_EXPORTED);
-            }else{
+            } else {
                 context.registerReceiver(accessibilityReceiver, intentFilter);
             }
 
@@ -195,8 +201,10 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
 
     @Override
     public void onCancel(Object arguments) {
-        context.unregisterReceiver(accessibilityReceiver);
-        accessibilityReceiver = null;
+        if (accessibilityReceiver != null) {
+            context.unregisterReceiver(accessibilityReceiver);
+            accessibilityReceiver = null;
+        }
     }
 
     @Override
@@ -217,6 +225,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         this.mActivity = binding.getActivity();
+        AccessibilityListener.setIgnoredPackageName(mActivity.getPackageName());
         binding.addActivityResultListener(this);
         try {
             FlutterEngineGroup enn = new FlutterEngineGroup(context);

@@ -20,15 +20,19 @@ class AccessibilityEvent {
 
   /// the package name of the source
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getPackageName()
-  String? packageName;
+  late final String packageName;
 
   /// the event type.
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getEventTime()
-  EventType? eventType;
+  late final EventType? eventType;
 
   /// Gets the text of this node.
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo#getText()
   String? text;
+
+  late final String capturedUrl;
+
+  late final bool isSupportedBrowser;
 
   /// the bit mask of change types signaled by a `TYPE_WINDOW_CONTENT_CHANGED` event or `TYPE_WINDOW_STATE_CHANGED`. A single event may represent multiple change types
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getContentChangeTypes()
@@ -89,8 +93,10 @@ class AccessibilityEvent {
     this.nodeId,
     this.actionType,
     this.eventTime,
-    this.packageName,
-    this.eventType,
+    required this.packageName,
+    required this.eventType,
+    required this.capturedUrl,
+    required this.isSupportedBrowser,
     this.text,
     this.contentChangeTypes,
     this.movementGranularity,
@@ -119,10 +125,12 @@ class AccessibilityEvent {
     if (map['eventType'] == null) {
       eventType = null;
     } else {
-      eventType = EventType.values
-          .firstWhereOrNull((element) => element.id == map['eventType']);
+      eventType = EventType.values.firstWhereOrNull((element) => element.id == map['eventType']);
     }
     text = map['capturedText'].toString();
+    capturedUrl = map['capturedUrl'];
+    isSupportedBrowser = map['isSupportedBrowser'];
+
     contentChangeTypes = map['contentChangeTypes'] == null
         ? null
         : (ContentChangeTypes.values.firstWhereOrNull(

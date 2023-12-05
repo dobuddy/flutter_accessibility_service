@@ -42,6 +42,34 @@ public class AccessibilityListener extends AccessibilityService {
     private static final int CACHE_SIZE = 1000;
     private static LruCache<String, AccessibilityNodeInfo> nodeMap =
             new LruCache<>(CACHE_SIZE);
+    private static Map<String, String> browsers;
+
+    private static String ignoredPackageName = "";
+
+    private static PackageManager packageManager;
+
+    private static Map<String, String> getSupportedBrowsers() {
+        if (browsers == null) {
+            browsers = new HashMap<>();
+            browsers.put("org.chromium.webview_shell", "org.chromium.webview_shell:id/url_field");
+            browsers.put("com.android.chrome", "com.android.chrome:id/url_bar");
+            browsers.put("org.mozilla.firefox", "org.mozilla.firefox:id/mozac_browser_toolbar_url_view");
+            browsers.put("com.opera.browser", "com.opera.browser:id/url_field");
+            browsers.put("com.brave.browser", "com.brave.browser:id/url_bar");
+            browsers.put("com.duckduckgo.mobile.android", "com.duckduckgo.mobile.android:id/omnibarTextInput");
+            browsers.put("com.sec.android.app.sbrowser", "com.sec.android.app.sbrowser:id/location_bar_edit_text");
+            browsers.put("com.microsoft.emmx", "com.microsoft.emmx:id/url_bar");
+        }
+        return browsers;
+    }
+
+    public static void setIgnoredPackageName(String packageName) {
+        ignoredPackageName = packageName;
+    }
+
+    public static void setPackageManager(PackageManager pm) {
+        packageManager = pm;
+    }
 
     public static AccessibilityNodeInfo getNodeInfo(String id) {
         return nodeMap.get(id);
@@ -62,6 +90,20 @@ public class AccessibilityListener extends AccessibilityService {
             if (parentNodeInfo == null) {
                 return;
             }
+
+            String packageName = parentNodeInfo.getPackageName().toString();
+            if (packageName.equals(ignoredPackageName)) {
+                return;
+            }
+
+            if (isSupportedBrowser) {
+                capturedUrl = captureUrl(parentNodeInfo, supportedBrowsers.get(packageName));
+                if (capturedUrl == null) {
+                    return;
+                }
+            }
+
+
             String nodeId = generateNodeId(parentNodeInfo);
             String packageName = parentNodeInfo.getPackageName().toString();
             storeNode(nodeId, parentNodeInfo);
@@ -78,6 +120,9 @@ public class AccessibilityListener extends AccessibilityService {
             data.put("actionType", accessibilityEvent.getAction());
             data.put("eventTime", accessibilityEvent.getEventTime());
             data.put("movementGranularity", accessibilityEvent.getMovementGranularity());
+            data.put("captureUrl", capturedUrl);
+            data.put("isSupportedBrowser", isSupportedBrowser);
+
             Rect rect = new Rect();
             parentNodeInfo.getBoundsInScreen(rect);
             data.put("screenBounds", getBoundingPoints(rect));
@@ -255,4 +300,18 @@ public class AccessibilityListener extends AccessibilityService {
         editor.apply();
     }
 
+
+    private String captureUrl(AccessibilityNodeInfo info, String urlViewId) {
+        List<AccessibilityNodeInfo> nodes = info.findAccessibilityNodeInfosByViewId(urlViewId);
+        if (nodes == null || nodes.size() <= 0) {
+            return null;
+        }
+
+        AccessibilityNodeInfo addressBarNodeInfo = nodes.get(0);
+        if (addressBarNodeInfo.getText() == null) {
+            return null;
+        }
+
+        return addressBarNodeInfo.getText().toString();
+    }
 }
