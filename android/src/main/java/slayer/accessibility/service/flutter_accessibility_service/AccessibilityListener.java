@@ -20,12 +20,14 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.RequiresApi;
-
+import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.HashSet;
 import java.util.stream.Collectors;
