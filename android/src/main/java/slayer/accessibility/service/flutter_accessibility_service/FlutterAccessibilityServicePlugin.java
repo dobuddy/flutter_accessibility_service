@@ -2,7 +2,6 @@ package slayer.accessibility.service.flutter_accessibility_service;
 
 import static slayer.accessibility.service.flutter_accessibility_service.Constants.*;
 
-import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -19,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -75,7 +74,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         pendingResult = result;
@@ -161,6 +160,14 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
         } else if (call.method.equals("hideOverlayWindow")) {
             AccessibilityListener.removeOverlay();
             result.success(true);
+
+        } else if (call.method.equals("getAppForegroundStats")) {
+            String packageName = call.argument("packageName");
+            int timeWindowInMins = call.argument("timeWindowInMins");
+            Map<String, Object> appUsageStats = AppUsageStatsHelper.getAppForegroundStats(context, packageName, timeWindowInMins);
+
+            result.success(appUsageStats);
+
         } else {
             result.notImplemented();
         }

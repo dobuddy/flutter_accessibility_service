@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_accessibility_service/accessibility_event.dart';
+import 'package:flutter_accessibility_service/app_foreground_stats.dart';
 import 'package:flutter_accessibility_service/constants.dart';
 
 class FlutterAccessibilityService {
@@ -151,6 +152,20 @@ class FlutterAccessibilityService {
     } on PlatformException catch (error) {
       log("$error");
       return false;
+    }
+  }
+
+  static Future<AppForegroundStats> getAppForegroundStats(String packageName, int timeWindowInMins) async {
+    try {
+      final Map<dynamic, dynamic> appForegroundStats = await _methodChannel.invokeMethod('getAppForegroundStats', {
+        'packageName': packageName,
+        'timeWindowInMins': timeWindowInMins,
+      });
+
+      return AppForegroundStats.fromJson(appForegroundStats);
+    } on PlatformException catch (error) {
+      log("$error");
+      return AppForegroundStats.nullish;
     }
   }
 }

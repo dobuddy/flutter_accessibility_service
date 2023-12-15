@@ -20,19 +20,19 @@ class AccessibilityEvent {
 
   /// the package name of the source
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getPackageName()
-  late final String packageName;
+  final String? packageName;
 
   /// the event type.
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getEventTime()
-  late final EventType? eventType;
+  final EventType? eventType;
 
   /// Gets the text of this node.
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo#getText()
   String? text;
 
-  late final String capturedUrl;
+  final String? capturedUrl;
 
-  late final bool isSupportedBrowser;
+  final bool? isSupportedBrowser;
 
   /// the bit mask of change types signaled by a `TYPE_WINDOW_CONTENT_CHANGED` event or `TYPE_WINDOW_STATE_CHANGED`. A single event may represent multiple change types
   /// https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent#getContentChangeTypes()
@@ -93,10 +93,10 @@ class AccessibilityEvent {
     this.nodeId,
     this.actionType,
     this.eventTime,
-    required this.packageName,
-    required this.eventType,
-    required this.capturedUrl,
-    required this.isSupportedBrowser,
+    this.packageName,
+    this.eventType,
+    this.capturedUrl,
+    this.isSupportedBrowser,
     this.text,
     this.contentChangeTypes,
     this.movementGranularity,
@@ -112,60 +112,36 @@ class AccessibilityEvent {
     this.isPip,
     this.screenBounds,
     this.actions,
+    this.subNodes,
   });
 
-  AccessibilityEvent.fromMap(Map<dynamic, dynamic> map) {
-    mapId = map['mapId'];
-    nodeId = map['nodeId'];
-    actionType = NodeAction.values
-            .firstWhereOrNull((element) => element.id == map['actionType']) ??
-        NodeAction.unknown;
-    eventTime = DateTime.now();
-    packageName = map['packageName'];
-    if (map['eventType'] == null) {
-      eventType = null;
-    } else {
-      eventType = EventType.values.firstWhereOrNull((element) => element.id == map['eventType']);
-    }
-    text = map['capturedText'].toString();
-    capturedUrl = map['capturedUrl'];
-    isSupportedBrowser = map['isSupportedBrowser'];
-
-    contentChangeTypes = map['contentChangeTypes'] == null
-        ? null
-        : (ContentChangeTypes.values.firstWhereOrNull(
-                (element) => element.id == map['contentChangeTypes']) ??
-            ContentChangeTypes.others);
-    movementGranularity = int.tryParse(map['movementGranularity'].toString());
-    windowType = map['windowType'] == null
-        ? null
-        : WindowType.values
-            .firstWhereOrNull((element) => element.id == map['windowType']);
-    isActive = map['isActive'];
-    isFocused = map['isFocused'];
-    isClickable = map['isClickable'];
-    isScrollable = map['isScrollable'];
-    isFocusable = map['isFocusable'];
-    isCheckable = map['isCheckable'];
-    isLongClickable = map['isLongClickable'];
-    isEditable = map['isEditable'];
-    isPip = map['isPip'];
-    screenBounds = map['screenBounds'] != null
-        ? ScreenBounds.fromMap(map['screenBounds'])
-        : null;
-    subNodes = map['subNodesActions'] != null
-        ? (map['subNodesActions'] as List<dynamic>)
-            .map((e) => AccessibilityEvent.fromMap(e))
-            .toList()
-        : [];
-    actions = map['parentActions'] == null
-        ? []
-        : (map['parentActions'] as List<dynamic>)
-            .map((e) =>
-                (NodeAction.values
-                    .firstWhereOrNull((element) => element.id == e)) ??
-                NodeAction.unknown)
-            .toList();
+  factory AccessibilityEvent.fromMap(Map<dynamic, dynamic> map) {
+    return AccessibilityEvent(
+      mapId: map['mapId'],
+      nodeId: map['nodeId'],
+      actionType: NodeAction.values.firstWhereOrNull((element) => element.id == map['actionType']) ?? NodeAction.unknown,
+      eventTime: DateTime.now(),
+      packageName: map['packageName'],
+      eventType: map['eventType'] != null ? EventType.values.firstWhereOrNull((element) => element.id == map['eventType']) : null,
+      text: map['capturedText'].toString(),
+      capturedUrl: map['capturedUrl'],
+      isSupportedBrowser: map['isSupportedBrowser'],
+      contentChangeTypes: map['contentChangeTypes'] == null ? null : (ContentChangeTypes.values.firstWhereOrNull((element) => element.id == map['contentChangeTypes']) ?? ContentChangeTypes.others),
+      movementGranularity: int.tryParse(map['movementGranularity'].toString()),
+      windowType: map['windowType'] == null ? null : WindowType.values.firstWhereOrNull((element) => element.id == map['windowType']),
+      isActive: map['isActive'],
+      isFocused: map['isFocused'],
+      isClickable: map['isClickable'],
+      isScrollable: map['isScrollable'],
+      isFocusable: map['isFocusable'],
+      isCheckable: map['isCheckable'],
+      isLongClickable: map['isLongClickable'],
+      isEditable: map['isEditable'],
+      isPip: map['isPip'],
+      screenBounds: map['screenBounds'] != null ? ScreenBounds.fromMap(map['screenBounds']) : null,
+      subNodes: map['subNodesActions'] != null ? (map['subNodesActions'] as List<dynamic>).map((e) => AccessibilityEvent.fromMap(e)).toList() : [],
+      actions: map['parentActions'] == null ? [] : (map['parentActions'] as List<dynamic>).map((e) => (NodeAction.values.firstWhereOrNull((element) => element.id == e)) ?? NodeAction.unknown).toList(),
+    );
   }
 
   @override
@@ -177,6 +153,8 @@ class AccessibilityEvent {
        Event Time: $eventTime 
        Package Name: $packageName 
        Event Type: $eventType 
+       Captured Url: $capturedUrl
+       Is Supported Browser: $isSupportedBrowser
        Captured Text: $text 
        content Change Types: $contentChangeTypes 
        Movement Granularity: $movementGranularity
