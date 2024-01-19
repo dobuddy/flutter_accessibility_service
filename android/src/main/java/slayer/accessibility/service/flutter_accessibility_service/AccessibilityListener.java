@@ -241,13 +241,17 @@ public class AccessibilityListener extends AccessibilityService {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     protected void onServiceConnected() {
-        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mOverlayView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
-        mOverlayView.attachToFlutterEngine(FlutterEngineCache.getInstance().get(CACHED_TAG));
-        mOverlayView.setFitsSystemWindows(true);
-        mOverlayView.setFocusable(true);
-        mOverlayView.setFocusableInTouchMode(true);
-        mOverlayView.setBackgroundColor(Color.TRANSPARENT);
+        try {
+            mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            mOverlayView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
+            mOverlayView.attachToFlutterEngine(FlutterEngineCache.getInstance().get(CACHED_TAG));
+            mOverlayView.setFitsSystemWindows(true);
+            mOverlayView.setFocusable(true);
+            mOverlayView.setFocusableInTouchMode(true);
+            mOverlayView.setBackgroundColor(Color.TRANSPARENT);
+        } catch (NullPointerException e) {
+            Log.e("SERVICE_CONNECTED", "onServiceConnected NULL POINTER: " + e.getMessage());
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)

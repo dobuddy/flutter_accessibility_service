@@ -175,12 +175,16 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        channel.setMethodCallHandler(null);
-        eventChannel.setStreamHandler(null);
-        context.unregisterReceiver(actionsReceiver);
-        if (accessibilityReceiver != null) {
-            context.unregisterReceiver(accessibilityReceiver);
-            accessibilityReceiver = null;
+        try {
+            channel.setMethodCallHandler(null);
+            eventChannel.setStreamHandler(null);
+            context.unregisterReceiver(actionsReceiver);
+            if (accessibilityReceiver != null) {
+                context.unregisterReceiver(accessibilityReceiver);
+                accessibilityReceiver = null;
+            }
+        } catch (NullPointerException e) {
+            Log.e("ACCESSIBILITY", "onDetachedFromEngine  Null Pointer: " + e.getMessage());
         }
     }
 
