@@ -57,6 +57,9 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
     private Result pendingResult;
     final int REQUEST_CODE_FOR_ACCESSIBILITY = 167;
 
+    private Intent accessibilityReceiverRegistered;
+    private Intent actionsReceiverRegistered;
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         context = flutterPluginBinding.getApplicationContext();
@@ -86,7 +89,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
         } else if (call.method.equals("getSystemActions")) {
             if (Utils.isAccessibilitySettingsOn(context)) {
                 IntentFilter filter = new IntentFilter(BROD_SYSTEM_GLOBAL_ACTIONS);
-                context.registerReceiver(actionsReceiver, filter);
+                actionsReceiverRegistered = context.registerReceiver(actionsReceiver, filter);
                 Intent intent = new Intent(context, AccessibilityListener.class);
                 intent.putExtra(INTENT_SYSTEM_GLOBAL_ACTIONS, true);
                 context.startService(intent);
@@ -169,7 +172,10 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
         eventChannel.setStreamHandler(null);
-        context.unregisterReceiver(actionsReceiver);
+        if (actionsReceiverRegistered != null) {
+            context.unregisterReceiver(actionsReceiver);
+            actionsReceiverRegistered = null;
+        }
     }
     @SuppressLint("WrongConstant")
     @Override
@@ -181,9 +187,9 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
 
             accessibilityReceiver = new AccessibilityReceiver(events);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                context.registerReceiver(accessibilityReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+                accessibilityReceiverRegistered = context.registerReceiver(accessibilityReceiver, intentFilter, Context.RECEIVER_EXPORTED);
             }else{
-                context.registerReceiver(accessibilityReceiver, intentFilter);
+                accessibilityReceiverRegistered = context.registerReceiver(accessibilityReceiver, intentFilter);
             }
 
             /// Set up listener intent
@@ -195,8 +201,10 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
 
     @Override
     public void onCancel(Object arguments) {
-        context.unregisterReceiver(accessibilityReceiver);
-        accessibilityReceiver = null;
+        if (accessibilityReceiverRegistered != null) {
+            context.unregisterReceiver(accessibilityReceiver);
+            accessibilityReceiver = null;
+        }
     }
 
     @Override
